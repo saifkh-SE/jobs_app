@@ -71,9 +71,10 @@ class JobInformationPage extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           title!,
-                          // overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: mediaQuery.size.height * 0.025,
+                            fontSize: mediaQuery.size.height * 0.022,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -139,7 +140,7 @@ class JobInformationPage extends StatelessWidget {
               child: Text(
                 _parseHtmlString(content!),
                 style: TextStyle(
-                  fontSize: mediaQuery.size.height * 0.02,
+                  fontSize: mediaQuery.size.height * 0.018,
                 ),
               ),
             ),

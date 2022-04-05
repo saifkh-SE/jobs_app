@@ -33,7 +33,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String _sortOption = '';
+  String _sortOption = '';
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +69,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           IconButton(
-            icon: Icon(
-                MyApp.themeNotifier.value == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
             onPressed: () {
               MyApp.themeNotifier.value =
                   MyApp.themeNotifier.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
@@ -81,115 +80,120 @@ class _HomePageState extends State<HomePage> {
       body: FutureBuilder<JobsModel>(
         future: _jobsModel,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  _sortOption = '';
-                  _jobsModel = APIManager().getJobs();
-                });
-              },
-              child: ListView.builder(
-                itemCount: snapshot.data?.jobCount,
-                itemBuilder: (context, index) {
-                  var jobs = snapshot.data!.jobs!;
-                  if (_sortOption == 'name') {
-                    jobs.sort((a, b) {
-                      return a.title!.compareTo(b.title!);
+          return !snapshot.hasData
+              ? const Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _sortOption = '';
+                      _jobsModel = APIManager().getJobs();
                     });
-                  } else if (_sortOption == 'salary') {
-                    jobs.sort((a, b) {
-                      return b.salary!.compareTo(a.salary!);
-                    });
-                  }
-                  // snapshot.data!.jobs!.sort(name(jobs[index].title!));
-                  return InkWell(
-                    onTap: () {
-                      Get.to(JobInformationPage(
-                        title: jobs[index].title,
-                        companyName: jobs[index].companyName,
-                        companyLogo: jobs[index].companyLogo,
-                        publishedAt: jobs[index].publicationDate,
-                        jobType: jobs[index].jobType,
-                        location: jobs[index].candidateRequiredLocation,
-                        salary: jobs[index].salary,
-                        content: jobs[index].description,
-                        url: jobs[index].url,
-                      ));
-                    },
-                    child: Container(
-                      height: mediaQuery.size.height * 0.13,
-                      margin: const EdgeInsets.all(8),
-                      child: Row(
-                        children: <Widget>[
-                          Card(
-                            clipBehavior: Clip.antiAlias,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.network(
-                                jobs[index].companyLogo!,
-                                fit: BoxFit.cover,
+                  },
+                  child: ListView.builder(
+                    itemCount: snapshot.data?.jobCount,
+                    itemBuilder: (context, index) {
+                      var jobs = snapshot.data!.jobs!;
+                      if (_sortOption == 'name') {
+                        jobs.sort((a, b) {
+                          return a.title!.compareTo(b.title!);
+                        });
+                      } else if (_sortOption == 'salary') {
+                        jobs.sort((a, b) {
+                          return b.salary!.compareTo(a.salary!);
+                        });
+                      }
+                      // snapshot.data!.jobs!.sort(name(jobs[index].title!));
+                      return InkWell(
+                        onTap: () {
+                          Get.to(JobInformationPage(
+                            title: jobs[index].title,
+                            companyName: jobs[index].companyName,
+                            companyLogo: jobs[index].companyLogo,
+                            publishedAt: jobs[index].publicationDate,
+                            jobType: jobs[index].jobType,
+                            location: jobs[index].candidateRequiredLocation,
+                            salary: jobs[index].salary,
+                            content: jobs[index].description,
+                            url: jobs[index].url,
+                          ));
+                        },
+                        child: Container(
+                          height: mediaQuery.size.height * 0.12,
+                          margin: const EdgeInsets.all(8),
+                          child: Row(
+                            children: <Widget>[
+                              Card(
+                                clipBehavior: Clip.antiAlias,
+                                // decoration: BoxDecoration(
+                                //   borderRadius: BorderRadius.circular(20),
+                                // ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Image.network(
+                                    jobs[index].companyLogo!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      jobs[index].title!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: mediaQuery.size.height * 0.02,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      jobs[index].companyName!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: mediaQuery.size.height * 0.018,
+                                      ),
+                                    ),
+                                    const Divider(height: 2),
+                                    Text(
+                                      jobs[index].jobType!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: mediaQuery.size.height * 0.016,
+                                      ),
+                                    ),
+                                    Text(
+                                      jobs[index].candidateRequiredLocation!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: mediaQuery.size.height * 0.016,
+                                      ),
+                                    ),
+                                    Text(
+                                      jobs[index].publicationDate!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: mediaQuery.size.height * 0.016,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  jobs[index].title!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.size.height * 0.023,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  jobs[index].companyName!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.size.height * 0.02,
-                                  ),
-                                ),
-                                const Divider(height: 2),
-                                Text(
-                                  jobs[index].jobType!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.size.height * 0.017,
-                                  ),
-                                ),
-                                Text(
-                                  jobs[index].candidateRequiredLocation!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.size.height * 0.017,
-                                  ),
-                                ),
-                                Text(
-                                  jobs[index].publicationDate!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: mediaQuery.size.height * 0.017,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
+                        ),
+                      );
+                    },
+                  ),
+                );
+          // if (snapshot.hasData) {
+          // } else {
+          //   return const Center(child: CircularProgressIndicator());
+          // }
         },
       ),
     );
